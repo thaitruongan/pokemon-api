@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Authorized.hasOne(models.permission, {
+      Authorized.hasOne(models.Permission, {
         foreignKey: "permission_id",
         as: "permission",
       });

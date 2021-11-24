@@ -19,14 +19,14 @@ module.exports = (sequelize, DataTypes) => {
         as: "poke_type",
       });
 
-      Pokemon.belongsToMany(models.Poke_Category, {
+      Pokemon.belongsTo(models.Poke_category, {
         foreignKey: "id",
         as: "category",
       });
 
       Pokemon.hasOne(models.Pokemon, {
         foreignKey: "evolution",
-        as: "evolution",
+        as: "_evolution",
       });
     }
   }

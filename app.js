@@ -24,6 +24,8 @@ app.get("/api", (req, res) => {
   res.send("hihi");
 });
 
+app.use("/", require("./routes/users"));
+
 app.use(function (req, res, next) {
   next(createError(404));
 });

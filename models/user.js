@@ -18,8 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_id",
         as: "permissions",
       });
-
-      User;
     }
 
     generateToken() {
