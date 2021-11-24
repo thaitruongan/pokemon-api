@@ -23,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "id",
         as: "category",
       });
+
+      Pokemon.hasOne(models.Pokemon, {
+        foreignKey: "evolution",
+        as: "evolution",
+      });
     }
   }
   Pokemon.init(
@@ -77,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      poke_id: {
+      evolution: {
         type: DataTypes.STRING,
         allowNull: false,
       },
