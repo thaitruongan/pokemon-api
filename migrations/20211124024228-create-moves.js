@@ -1,45 +1,49 @@
-'use strict';
+"use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Moves', {
+    await queryInterface.createTable("Moves", {
       id: {
         allowNull: false,
         type: Sequelize.STRING,
-        default:Sequelize.UUIDV1,
-        primaryKey:true
+        default: Sequelize.UUIDV1,
+        primaryKey: true,
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       description: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       type_id: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        references: {
+          model: "Types",
+          key: "id",
+        },
       },
       category: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       power: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       energy: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       weather: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Moves');
-  }
+    await queryInterface.dropTable("Moves");
+  },
 };

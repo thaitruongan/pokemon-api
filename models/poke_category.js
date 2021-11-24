@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Poke_category extends Model {
     /**
@@ -11,22 +9,25 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Poke_category.hasMany(models.Moves, {
-        foreignKey: 'type_id',
-        as: 'moves'
-      })      
+      Poke_category.hasMany(models.Pokemon, {
+        foreignKey: "category_id",
+        as: "category",
+      });
     }
-  };
-  Poke_category.init({
-    id:{
-      type:DataTypes.STRING,
-      defaultValue:DataTypes.UUIDV1,
-      primaryKey:true
+  }
+  Poke_category.init(
+    {
+      id: {
+        type: DataTypes.STRING,
+        defaultValue: DataTypes.UUIDV1,
+        primaryKey: true,
+      },
+      name: { type: DataTypes.STRING, allowNull: false, unique: true },
     },
-    name: {type: DataTypes.STRING,allowNull:false,unique:true}
-  }, {
-    sequelize,
-    modelName: 'Poke_category',
-  });
+    {
+      sequelize,
+      modelName: "Poke_category",
+    }
+  );
   return Poke_category;
 };

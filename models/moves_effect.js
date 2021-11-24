@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Moves_effect extends Model {
     /**
@@ -12,28 +10,34 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Moves_effect.belongsTo(models.Moves, {
-        foreignKey: 'moves_id',
-        as:'moves'
+        foreignKey: "moves_id",
+        as: "moves",
       });
       Moves_effect.belongsTo(models.Type, {
-        foreignKey: 'type_id',
-        as:'type'
-      })
+        foreignKey: "type_id",
+        as: "type",
+      });
     }
-  };
-  Moves_effect.init({
-    id:{
-      type:DataTypes.STRING,
-      defaultValue:DataTypes.UUIDV1,
-      primaryKey:true
+  }
+  Moves_effect.init(
+    {
+      id: {
+        type: DataTypes.STRING,
+        defaultValue: DataTypes.UUIDV1,
+        primaryKey: true,
+      },
+      moves_id: { type: DataTypes.STRING, allowNull: false },
+      type_id: { type: DataTypes.STRING, allowNull: false },
+      category: {
+        type: DataTypes.ENUM("Super effective", "Not very effective"),
+        allowNull: false,
+      },
+      dame: { type: DataTypes.FLOAT, allowNull: false },
     },
-    moves_id: {type:DataTypes.STRING,allowNull:false},
-    type_id: {type:DataTypes.STRING,allowNull:false},
-    category: {type:DataTypes.STRING,allowNull:false},
-    dame: {type:DataTypes.FLOAT,allowNull:false}
-  }, {
-    sequelize,
-    modelName: 'Moves_effect',
-  });
+    {
+      sequelize,
+      modelName: "Moves_effect",
+    }
+  );
   return Moves_effect;
 };

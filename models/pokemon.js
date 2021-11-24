@@ -1,8 +1,6 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-const { all } = require('sequelize/dist/lib/operators');
+"use strict";
+const { Model } = require("sequelize");
+const { all } = require("sequelize/dist/lib/operators");
 module.exports = (sequelize, DataTypes) => {
   class Pokemon extends Model {
     /**
@@ -13,74 +11,81 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Pokemon.hasMany(models.Type_effect, {
-        foreignKey: 'poke_id',
-        as: 'type_effect'
-      })
+        foreignKey: "poke_id",
+        as: "type_effect",
+      });
       Pokemon.hasMany(models.Poke_type, {
-        foreignKey: 'poke_id',
-        as: 'poke_type'
-      })
-    }
-  };
-  Pokemon.init({
-    id:{
-      type:DataTypes.STRING,
-      defaultValue:DataTypes.UUIDV1,
-      primaryKey:true
-    },
-    name: {
-      type:DataTypes.STRING,
-      unique:true,
-      allowNull:false
-    },
-    maxcp: {
-      type:DataTypes.INTEGER,
-      allowNull:false
-    },
-    attack: {
-      type:DataTypes.INTEGER,
-      allowNull:false
-    },
-    def: {
-      type:DataTypes.INTEGER,
-      allowNull:false
-    },
-    stamina:{
-      type: DataTypes.INTEGER,
-      allowNull:false
-    },
-    description: {
-      type:DataTypes.STRING,
-      allowNull:false
-    },
-    generation:{
-      type:DataTypes.STRING,
-      allowNull:false
-    },
-    category_id:{
-      type:DataTypes.STRING,
-      allowNull:false
-    },
-    height:{
-      type:DataTypes.FLOAT,
-      allowNull:false
-    },
-    weight:{
-      type:DataTypes.FLOAT,
-      allowNull:false
-    },
-    img:{
-      type: DataTypes.STRING,
-      allowNull:false,
-    },
-    poke_id:{
-      type:DataTypes.STRING,
-      allowNull:false
-    }
+        foreignKey: "poke_id",
+        as: "poke_type",
+      });
 
-  }, {
-    sequelize,
-    modelName: 'Pokemon',
-  });
+      Pokemon.belongsToMany(models.Poke_Category, {
+        foreignKey: "id",
+        as: "category",
+      });
+    }
+  }
+  Pokemon.init(
+    {
+      id: {
+        type: DataTypes.STRING,
+        defaultValue: DataTypes.UUIDV1,
+        primaryKey: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+      },
+      maxcp: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      attack: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      def: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      stamina: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      generation: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      category_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      height: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+      },
+      weight: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+      },
+      img: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      poke_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+    },
+    {
+      sequelize,
+      modelName: "Pokemon",
+    }
+  );
   return Pokemon;
 };

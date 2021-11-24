@@ -1,30 +1,38 @@
-'use strict';
+"use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Poke_types', {
+    await queryInterface.createTable("Poke_types", {
       id: {
         allowNull: false,
         type: Sequelize.STRING,
-        default:Sequelize.UUIDV1,
-        primaryKey:true
+        default: Sequelize.UUIDV1,
+        primaryKey: true,
       },
       poke_id: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        references: {
+          model: "Pokemons",
+          key: "id",
+        },
       },
       type_id: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        references: {
+          model: "Types",
+          key: "id",
+        },
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Poke_types');
-  }
+    await queryInterface.dropTable("Poke_types");
+  },
 };

@@ -1,58 +1,62 @@
-'use strict';
+"use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Pokemons', {
+    await queryInterface.createTable("Pokemons", {
       id: {
         allowNull: false,
         type: Sequelize.STRING,
-        default:Sequelize.UUIDV1,
-        primaryKey:true
+        default: Sequelize.UUIDV1,
+        primaryKey: true,
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       maxcp: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
-      attack:{
-        type:Sequelize.INTEGER
+      attack: {
+        type: Sequelize.INTEGER,
       },
-      def:{
-        type:Sequelize.INTEGER
+      def: {
+        type: Sequelize.INTEGER,
       },
-      description:{
-        type:Sequelize.STRING
+      description: {
+        type: Sequelize.STRING,
       },
-      generation:{
-        type:Sequelize.STRING
+      generation: {
+        type: Sequelize.STRING,
       },
-      category_id:{
-        type:Sequelize.STRING
+      category_id: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: "Poke_categories",
+          key: "id",
+        },
       },
-      height:{
-        type:Sequelize.FLOAT
+      height: {
+        type: Sequelize.FLOAT,
       },
-      weight:{
-        type:Sequelize.FLOAT
+      weight: {
+        type: Sequelize.FLOAT,
       },
-      img:{
-        type:Sequelize.STRING
+      img: {
+        type: Sequelize.STRING,
       },
-      poke_id:{
-        type:Sequelize.STRING
+      poke_id: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
-      
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Pokemons');
-  }
+    await queryInterface.dropTable("Pokemons");
+  },
 };
