@@ -18,6 +18,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_id",
         as: "permissions",
       });
+
+      User;
     }
 
     generateToken() {
@@ -36,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: DataTypes.UUIDV1,
         primaryKey: true,
+        unique: true,
       },
       email: {
         type: DataTypes.STRING,
