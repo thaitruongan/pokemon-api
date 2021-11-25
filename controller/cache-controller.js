@@ -39,7 +39,7 @@ class CacheController {
   }
 
   delete(keys) {
-    this.cache.delete(keys);
+    this.cache.del(keys);
   }
 
   flush() {
