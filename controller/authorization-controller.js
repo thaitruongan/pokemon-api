@@ -13,7 +13,18 @@ const User = require("../models").User;
 
 module.exports = {
   list(req, res) {
-    Authorized.findAll()
+    Authorized.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+        },
+        {
+          model: Permission,
+          as: "permission",
+        },
+      ],
+    })
       .then((authorized) => {
         if (!authorized)
           return res.status(404).send({ message: "Authorization not found" });
@@ -44,6 +55,7 @@ module.exports = {
           permission_id: permissionId,
         })
           .then((authorized) => {
+            cache.delete(`${userId}-auth${cacheKey}`);
             res.status(201).send(authorized);
           })
           .catch((error) => {
@@ -60,7 +72,7 @@ module.exports = {
   delete(req, res) {
     const { userId, permissionId } = req.body;
 
-    Authorized.findAll({
+    Authorized.findOne({
       where: {
         user_id: userId,
         permission_id: permissionId,
@@ -72,7 +84,7 @@ module.exports = {
             .status(400)
             .send({ status: "fail", message: "authorized not found!" });
 
-        return caption
+        return authorized
           .destroy()
           .then(() => {
             cache.delete(`all-auth${cacheKey}`);
@@ -93,9 +105,18 @@ module.exports = {
       );
   },
 
-  getUserAuth(userId) {
-    return cache.get(`${userId}-auth${cacheKey}`, () =>
+  async getUserAuth(req, res) {
+    const { userId } = req.body;
+    const cacheResult = await cache.request(`${userId}-auth${cacheKey}`);
+    console.log(cacheResult);
+    if (cacheResult === null) {
       Authorized.findAll({
+        include: [
+          {
+            model: Permission,
+            as: "permission",
+          },
+        ],
         where: {
           user_id: userId,
         },
@@ -104,15 +125,22 @@ module.exports = {
           if (!authorizations)
             return res.status(404).send({
               status: "fail",
-              meesage: "This user have no permissions",
+              message: "This user have no permissions",
             });
-
-          return res.status(200).send(authorizations);
+          let permissions = [];
+          authorizations.forEach((authorization) => {
+            permissions.push({
+              permission: authorization.permission.permission,
+              table: authorization.permission.table,
+            });
+          });
+          cache.set(`${userId}-auth${cacheKey}`, permissions);
+          return res.status(200).send(permissions);
         })
         .catch((error) => {
           console.error(error);
           res.status(400).send({ status: "fail", message: error.meesage });
-        })
-    );
+        });
+    } else res.status(200).send(cacheResult);
   },
 };

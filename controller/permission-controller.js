@@ -7,21 +7,20 @@ const Permission = require("../models").Permission;
 
 module.exports = {
   list(req, res) {
-    return cache.get(`all-permission${cacheKey}`, () =>
-      Permission.findAll()
-        .then((permissions) => {
-          if (!permissions)
-            return res
-              .status(404)
-              .send({ status: "fail", message: "Permission not found" });
+    return cache
+      .get(`all-permission${cacheKey}`, () => Permission.findAll())
+      .then((permissions) => {
+        if (!permissions)
+          return res
+            .status(404)
+            .send({ status: "fail", message: "Permission not found" });
 
-          return res.status(200).send(permissions);
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(400).send(error.message);
-        })
-    );
+        return res.status(200).send(permissions);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(400).send(error.message);
+      });
   },
 
   create(req, res) {
@@ -51,5 +50,25 @@ module.exports = {
       });
   },
 
-  delete(req, res) {},
+  delete(req, res) {
+    const { id } = req.body;
+    Permission.findByPk(id).then((permission) => {
+      if (!permission)
+        return res
+          .status(400)
+          .send({ status: "fail", message: "permission not found!" });
+
+      permission
+        .destroy()
+        .then(() =>
+          res.status(200).send({
+            status: "succeed",
+            message: "Permission was deleted successfully",
+          })
+        )
+        .catch((error) =>
+          res.status(400).send({ status: "fail", message: error.message })
+        );
+    });
+  },
 };
