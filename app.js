@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const createError = require("http-errors");
 require("dotenv").config();
+const fileUpload = require('express-fileupload')
 
 const app = express();
 
@@ -20,15 +21,21 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(fileUpload({
+  useTempFiles: true
+}))
 
 //Route
-app.get("/api", (req, res) => {
-  res.send("hihi");
-});
-
 app.use("/api/users", require("./routes/users"));
 app.use("/api/authorization", require("./routes/authorized"));
 app.use("/api/permission", require("./routes/permission"));
+app.use('/api/type', require('./router/type-router'));
+app.use('/api/category', require('./router/category-router'));
+app.use('/api/pokemon', require('./router/pokemon-router'));
+app.use('/api/moves', require('./router/moves-router'));
+app.use('/api/movesEffect', require('./router/movesEffect-router'));
+
+app.use('/api/upload',require('./router/upload-router'));
 
 app.use(function (req, res, next) {
   next(createError(404));
