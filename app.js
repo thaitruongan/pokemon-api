@@ -11,13 +11,15 @@ const app = express();
 const env = process.env.NODE_ENV || "development";
 const config = require("./config/config.json")[env];
 
+app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+
+// app.set("view engine", "ejs");
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
 //Route
 app.get("/api", (req, res) => {
@@ -25,6 +27,8 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/api/users", require("./routes/users"));
+app.use("/api/authorization", require("./routes/authorized"));
+app.use("/api/permission", require("./routes/permission"));
 
 app.use(function (req, res, next) {
   next(createError(404));
@@ -38,7 +42,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.json(err);
 });
 
 if (!config.privateKey) {

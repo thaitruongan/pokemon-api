@@ -7,63 +7,112 @@ const __table = config.table;
 
 const cacheKey = config.cacheKey;
 
-const Authorization = require("../models").Authorized;
-const APIKEY = require("../models").APIKEY;
+const Authorized = require("../models").Authorized;
 const Permission = require("../models").Permission;
+const User = require("../models").User;
 
 module.exports = {
-  getById(id) {
-    return cache
-      .get(`${id}${cacheKey}`, () =>
-        Authorization.findByPk(id, {
-          include: [
-            {
-              model: Permission,
-              as: "permissions",
-            },
-          ],
-        })
-      )
-      .then((authorization) => {
-        if (!authorization)
-          return res
-            .status(404)
-            .send({ message: "This APIKEY is not authorized" });
+  list(req, res) {
+    Authorized.findAll()
+      .then((authorized) => {
+        if (!authorized)
+          return res.status(404).send({ message: "Authorization not found" });
 
-        return res.status(200).send(authorization);
+        return res.status(200).send(authorized);
       })
-      .catch((err) => {
-        console.error(err.message);
+      .catch((error) => {
+        console.error(error);
         res.status(400).send(error.message);
       });
   },
 
   create(req, res) {
-    const { api_key_id, permission_id } = req.body;
+    const { userId, permissionId } = req.body;
 
-    return Authorization.Create({
-      apy_key_id: api_key_id,
-      permission_id: permission_id,
+    Authorized.findOne({
+      where: { user_id: userId, permission_id: permissionId },
     })
-      .then((authorization) => {
-        res.status(201).send(authorization);
+      .then((authorized) => {
+        if (authorized)
+          return res.status(400).send({
+            status: "fail",
+            message: "this user was owned this permission",
+          });
+
+        Authorized.create({
+          user_id: userId,
+          permission_id: permissionId,
+        })
+          .then((authorized) => {
+            res.status(201).send(authorized);
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(401).send({ status: "fail", message: error.message });
+          });
       })
       .catch((error) => {
-        console.error(error.message);
-
-        res.status(401).send(error.message);
+        console.log(error);
+        res.status(400).send({ status: "fail", message: error.message });
       });
   },
 
   delete(req, res) {
-    const { id } = req.body;
-    return Authorization.findByPk(id).then((authorization) => {
-      if (!authorization)
-        return res.status(400).send({ message: "Authorized not found" });
-    });
+    const { userId, permissionId } = req.body;
+
+    Authorized.findAll({
+      where: {
+        user_id: userId,
+        permission_id: permissionId,
+      },
+    })
+      .then((authorized) => {
+        if (!authorized)
+          return res
+            .status(400)
+            .send({ status: "fail", message: "authorized not found!" });
+
+        return caption
+          .destroy()
+          .then(() => {
+            cache.delete(`all-auth${cacheKey}`);
+            cache.delete(`${userId}-auth${cacheKey}`);
+          })
+          .then(() =>
+            res.status(204).send({
+              status: "success",
+              message: "authorized was removed successfully",
+            })
+          )
+          .catch((error) =>
+            res.status(400).send({ status: "fail", message: error.message })
+          );
+      })
+      .catch((error) =>
+        res.status(400).send({ status: "fail", message: error.message })
+      );
   },
 
-  Verify(id, permission) {
-    return;
+  getUserAuth(userId) {
+    return cache.get(`${userId}-auth${cacheKey}`, () =>
+      Authorized.findAll({
+        where: {
+          user_id: userId,
+        },
+      })
+        .then((authorizations) => {
+          if (!authorizations)
+            return res.status(404).send({
+              status: "fail",
+              meesage: "This user have no permissions",
+            });
+
+          return res.status(200).send(authorizations);
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(400).send({ status: "fail", message: error.meesage });
+        })
+    );
   },
 };
