@@ -1,5 +1,4 @@
-const CacheController = require("./cache-controller");
-const cache = new CacheController(604800);
+const cache = require("./cache-controller");
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config.json")[env];
@@ -18,10 +17,6 @@ module.exports = {
       .get(`${id}${cacheKey}`, () =>
         Authorization.findByPk(id, {
           include: [
-            {
-              model: APIKEY,
-              as: "api_key",
-            },
             {
               model: Permission,
               as: "permissions",
@@ -69,6 +64,6 @@ module.exports = {
   },
 
   Verify(id, permission) {
-    return;  
+    return;
   },
 };

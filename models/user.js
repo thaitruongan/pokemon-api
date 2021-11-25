@@ -41,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
           isEmail: true,
         },
@@ -61,8 +62,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("Male", "Female"),
         allowNull: false,
       },
-      api_key: DataTypes.STRING,
-      defaultValue: "",
+      api_key: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+      },
     },
     {
       sequelize,
