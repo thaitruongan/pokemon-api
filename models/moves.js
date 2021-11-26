@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       description: { type: DataTypes.STRING, allowNull: false },
       type_id: { type: DataTypes.STRING, allowNull: false },
       category: {
-        type: DataTypes.ENUM("fast moves", "charge moves"),
+        type: DataTypes.ENUM({ values: ["fast moves", "charge moves"] }),
         allowNull: false,
       },
       power: { type: DataTypes.INTEGER, allowNull: false },
