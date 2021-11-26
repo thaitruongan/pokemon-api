@@ -34,7 +34,8 @@ app.use('/api/category', require('./router/category-router'));
 app.use('/api/pokemon', require('./router/pokemon-router'));
 app.use('/api/moves', require('./router/moves-router'));
 app.use('/api/movesEffect', require('./router/movesEffect-router'));
-
+app.use('/api/typeEffect', require('./router/typeEffect-router'));
+app.use('/api/pokeType', require('./router/pokeType-router'));
 app.use('/api/upload',require('./router/upload-router'));
 
 app.use(function (req, res, next) {
