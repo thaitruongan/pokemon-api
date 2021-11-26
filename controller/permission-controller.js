@@ -25,10 +25,8 @@ module.exports = {
 
   create(req, res) {
     const { _permission, _table } = req.body;
-    console.log(_permission, _table);
     Permission.findOne({ where: { permission: _permission, table: _table } })
       .then((permission) => {
-        console.log(permission);
         if (permission)
           return res.status(400).send({
             status: "fail",

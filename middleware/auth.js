@@ -33,7 +33,6 @@ const Auth = {
       const userId = req.user.id;
       AuthorizedController.getUserAuth(userId)
         .then((userAuth) => {
-          console.log(userAuth);
           if (!userAuth)
             return res
               .status(400)
@@ -44,10 +43,9 @@ const Auth = {
 
             let checker = userAuth.find(
               (_permission) =>
-                _permission.permission === permission ||
+                _permission.permission === permission &&
                 _permission.table === table
             );
-
             if (checker === undefined)
               return res
                 .status(400)

@@ -62,10 +62,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("Male", "Female"),
         allowNull: false,
       },
-      api_key: {
-        type: DataTypes.STRING,
-        defaultValue: "",
-      },
     },
     {
       sequelize,

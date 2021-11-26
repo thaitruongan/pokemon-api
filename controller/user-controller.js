@@ -32,7 +32,6 @@ module.exports = {
     // }
 
     const { email, password, name, birthday, sex } = req.body;
-    console.log(new Date(birthday));
     bcrypt.hash(password, saltRounds, function (err, hash) {
       return User.create({
         email: email,
@@ -130,6 +129,66 @@ module.exports = {
                 birthday: new Date(birthday),
                 sex: sex,
                 api_key: api_key,
+              })
+              .then(() => cache.delete(user.email + config.cacheKey))
+              .then(() =>
+                res.status(200).send({
+                  status: "succeed",
+                  message: `User ${user.email} updated succeed`,
+                })
+              );
+          })
+          .catch((error) =>
+            res.status(400).send({ status: "fail", message: error.message })
+          );
+      });
+    } else {
+      User.findOne({
+        where: { email: email },
+      })
+        .then((user) => {
+          if (!user)
+            return res
+              .status(400)
+              .send({ status: "fail", message: "User not found" });
+
+          return user
+            .update({
+              name: name,
+              birthday: new Date(birthday),
+              sex: sex,
+            })
+            .then(() => cache.delete(user.email + config.cacheKey))
+            .then(() =>
+              res.status(200).send({
+                status: "succeed",
+                message: `User ${user.email} updated succeed`,
+              })
+            );
+        })
+        .catch((error) =>
+          res.status(400).send({ status: "fail", message: error.message })
+        );
+    }
+  },
+
+  selfUpdate(req, res) {
+    const { password, name, birthday, sex, api_key } = req.body;
+    if (password !== null) {
+      bcrypt.hash(password, saltRounds, (error, hash) => {
+        return User.findByPk(req.user.id)
+          .then((user) => {
+            if (!user)
+              return res
+                .status(400)
+                .send({ status: "fail", message: "User not found" });
+
+            return user
+              .update({
+                password: hash,
+                name: name,
+                birthday: new Date(birthday),
+                sex: sex,
               })
               .then(() => cache.delete(user.email + config.cacheKey))
               .then(() =>
